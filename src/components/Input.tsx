@@ -1,9 +1,9 @@
 import React from "react";
 
 type InputProps = {
-  type: "text" | "file";
+  type: "text" | "number" | "file" | "password" | "email" | "tel";
   name: string;
-  value: string;
+  value: string | number;
   palceholder: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   className: string;

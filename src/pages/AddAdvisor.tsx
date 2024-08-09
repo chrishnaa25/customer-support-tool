@@ -1,15 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import Button from "../components/Button";
 import plus from "../images/plusicon.svg";
 import Input from "../components/Input";
-import search from "../images/searchicon.svg";
+import searchh from "../images/searchicon.svg";
 
-export default function AddAdvisor() {
+interface AddAdvisorProps {
+  add: () => void;
+}
+
+export default function AddAdvisor({ add }: AddAdvisorProps) {
+  const [search, setSearch] = useState("");
   const handleClick = () => {};
-  const handleChange = () => {};
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
+  };
   return (
     <div>
-      <div className=" mx-48 my-10 border flex flex-col justify-between w-[70%] h-32 pt-6 px-6 rounded-lg font-poppins">
+      <div className="bg-customWhite mx-10 mt-3 flex flex-col justify-between h-32 pt-6 px-6 rounded-lg font-poppins">
         <div className="flex gap-5 items-center">
           <p className="font-semibold text-3xl leading-[48px] ">
             A1 Car Service Center
@@ -33,7 +40,10 @@ export default function AddAdvisor() {
           </div>
           {/* ADD AND DELETE ADVISOR BUTTONS */}
           <div className="flex gap-6 h-8 text-sm justify-center ">
-            <div className="flex border border-customBlue rounded gap-1 px-2 items-center ">
+            <div
+              onClick={add}
+              className="cursor-pointer flex border border-customBlue rounded gap-1 px-2 items-center "
+            >
               <img src={plus} alt="" className="h-6 w-6" />
               <Button
                 type="button"
@@ -43,11 +53,11 @@ export default function AddAdvisor() {
               />
             </div>
             <div className="flex rounded gap-1 border border-customBorder px-2 items-center">
-              <img src={search} alt="" className="h-6 w-6" />
+              <img src={searchh} alt="" className="h-6 w-6" />
               <Input
                 type="text"
                 name="Search"
-                value=""
+                value={search}
                 palceholder="Service Advisors"
                 className="h-6 focus:outline-none"
                 onChange={handleChange}

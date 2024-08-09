@@ -3,16 +3,14 @@ import cross from "../images/crossicon.svg";
 import tick from "../images/tickicon.svg";
 import Button from "../components/Button";
 
-interface ExpertiseLayoutProps {
+interface CountryProps {
   save: (selectedButton: string) => void;
   cancel: () => void;
 }
 
-export default function ExpertiseLayout({
-  save,
-  cancel,
-}: ExpertiseLayoutProps) {
+export default function CountryLayout({ save, cancel }: CountryProps) {
   const [isClicked, setIsClicked] = useState<string | null>(null);
+
   const handleClicked =
     (id: string) => (e: React.MouseEvent<HTMLButtonElement>) => {
       setIsClicked(id);
@@ -23,16 +21,10 @@ export default function ExpertiseLayout({
       save(isClicked);
     }
   };
-  const handleClick = () => {};
-  const Buttons = [
-    "Engine TroubleShooting",
-    "Exhaust Systems",
-    "Brake Systems",
-    "Battery Expert",
-    "Electric Systems",
-  ];
 
-  const ButtonComponent = Buttons.map((button, key) => (
+  const Buttons = ["German", "Indian", "Japanese"];
+
+  const ButtonComponent = Buttons.map((button) => (
     <div
       key={button}
       className="flex justify-between w-full bg-customSlate pr-4 rounded-lg h-12 font-medium"
@@ -50,12 +42,11 @@ export default function ExpertiseLayout({
       />
     </div>
   ));
-
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className=" bg-customWhite w-full mx-60 h-max rounded-lg font-poppins p-6">
         <div className="flex justify-between">
-          <p className="text-2xl font-semibold">Edit Expertise</p>
+          <p className="text-2xl font-semibold">Country</p>
           <img
             onClick={cancel}
             src={cross}

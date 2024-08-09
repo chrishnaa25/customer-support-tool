@@ -7,19 +7,12 @@ import ExpertiseLayout from "./pages/ExpertiseLayout";
 import ServiceCenter from "./pages/ServiceCenter";
 import AddAdvisor from "./pages/AddAdvisor";
 import PersonalDetails from "./pages/PersonalDetails";
+import Main from "./pages/Main";
 
 function App() {
   return (
     <div>
-      <PersonalDetails />
-      <AddAdvisor />
-      <ServiceCenter />
-      <Details />
-      <div className="flex items-center">
-        <OtpVerification />
-        <DeletePopup />
-      </div>
-      <ExpertiseLayout />
+      <Main />
     </div>
   );
 }

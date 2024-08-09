@@ -1,7 +1,12 @@
 import React from "react";
 import Button from "../components/Button";
 
-export default function DeletePopup() {
+interface DeletePopupProps {
+  cancel: () => void;
+  ondelete: () => void;
+}
+
+export default function DeletePopup({ cancel, ondelete }: DeletePopupProps) {
   const handleClick = () => {};
   return (
     <div>
@@ -13,13 +18,13 @@ export default function DeletePopup() {
           <Button
             type="button"
             name="Yes, Delete"
-            onClick={handleClick}
+            onClick={ondelete}
             className="w-[146px] rounded-[4px] p-[12px] gap-[10px] text-[12px] font-[600] leading-[15px] bg-customRed text-customWhite"
           />
           <Button
             type="button"
             name="Cancel"
-            onClick={handleClick}
+            onClick={cancel}
             className="w-[146px] rounded-[4px] p-[12px] gap-[10px] text-[12px] font-[600] leading-[15px] bg-customSlate text-customRed"
           />
         </div>

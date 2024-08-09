@@ -1,13 +1,55 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import img from "../images/image 262.svg";
+import drop from "../images/dropdownicon.svg";
 import Input from "../components/Input";
 import Button from "../components/Button";
 import edit from "../images/editwhite.svg";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../redux/store";
+import ExpertiseLayout from "./ExpertiseLayout";
+import {
+  Owner,
+  showOwnerDetails,
+  updateOwnerDetails,
+} from "../redux/inputSlice";
+import OtpVerification from "./OtpVerification";
+import green from "../images/greentick.svg";
 
-export default function PersonalDetails() {
+interface PersonalDetailsProps {
+  save: () => void;
+  editIndex?: number;
+}
+
+export default function PersonalDetails({
+  save,
+  editIndex,
+}: PersonalDetailsProps) {
   const [image, setImage] = useState<string>(img);
   const inputRef = useRef<HTMLInputElement>(null);
-  const handleChange = () => {};
+  const [showExpertise, setShowExpertise] = useState(false);
+  const [showOtp, setShowOtp] = useState(false);
+  const [selectedExpertise, setSelectedExpertise] = useState("");
+  const [isVerified, setIsVerified] = useState(false);
+  const owner = useSelector((state: RootState) => state.input.Owner);
+  const dispatch = useDispatch();
+  const [ownerDetails, setOwnerDetails] = useState<Owner>({
+    name: "",
+    phone: "",
+    expertise: "",
+    experience: "",
+  });
+
+  useEffect(() => {
+    if (editIndex !== undefined && owner[editIndex]) {
+      const newOwner = owner[editIndex];
+      setOwnerDetails(newOwner);
+      setSelectedExpertise(newOwner.expertise);
+    }
+  }, [editIndex, owner]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setOwnerDetails((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
   const handleClick = () => {};
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -22,14 +64,61 @@ export default function PersonalDetails() {
     }
   };
 
+  const handleInputClick = () => {
+    setShowExpertise(!showExpertise);
+  };
+
+  const handleVerify = () => {
+    if (ownerDetails.phone !== "") {
+      setShowOtp(!showOtp);
+    }
+    if (showOtp === false) {
+      setIsVerified(true);
+    }
+  };
+
+  const handleSave = (selectedButton: string) => {
+    setSelectedExpertise(selectedButton);
+    setShowExpertise(false);
+  };
+
+  const handleCancel = () => {
+    setShowExpertise(false);
+  };
+
+  const handlesaveInput = () => {
+    if (
+      ownerDetails.name !== "" &&
+      ownerDetails.phone !== "" &&
+      ownerDetails.experience !== "" &&
+      ownerDetails.expertise !== selectedExpertise
+    ) {
+      if (editIndex !== undefined) {
+        dispatch(
+          updateOwnerDetails({
+            index: editIndex,
+            owner: { ...ownerDetails, expertise: selectedExpertise },
+          })
+        );
+      } else {
+        dispatch(
+          showOwnerDetails({ ...ownerDetails, expertise: selectedExpertise })
+        );
+      }
+      save();
+    }
+  };
+
+  const handleOtpSave = () => {};
+
   return (
     <div>
-      <div className="mx-48 my-10 border  flex flex-col bg-customWhite rounded-lg w-[70%] p-7 gap-7 font-poppins">
+      <div className="bg-customWhite mx-10 flex flex-col bg-customWhite rounded-lg mt-5 p-7 gap-7 font-poppins">
         {/* DP & DETAILS */}
         <div className=" flex flex-col gap-7">
           <div className="relative">
-            <img src={image} alt="" className="h-60 w-60" />
-            <div className="absolute left-44 bottom-2 flex items-center bg-customBlue shadow-lg w-max h-max pl-2 p-1 rounded">
+            <img src={image} alt="" className="h-28 w-28" />
+            <div className="absolute left-12 bottom-1 flex items-center bg-customBlue shadow-lg w-max h-max pl-2 p-1 rounded">
               <Button
                 type="button"
                 name="Edit"
@@ -54,7 +143,7 @@ export default function PersonalDetails() {
                 <Input
                   type="text"
                   name="name"
-                  value=""
+                  value={ownerDetails.name}
                   palceholder=""
                   className="border rounded-lg h-6 w-full p-2 h-full"
                   onChange={handleChange}
@@ -62,36 +151,69 @@ export default function PersonalDetails() {
               </div>
               <div className="flex flex-col gap-1 w-[48%] h-16">
                 <p className="text-sm text-customOtp">Phone Number</p>
-                <Input
-                  type="text"
-                  name="phone"
-                  value=""
-                  palceholder=""
-                  className="border rounded-lg h-6 w-full p-2 h-full"
-                  onChange={handleChange}
-                />
+                <div className="flex border rounded-lg items-center pr-3">
+                  <Input
+                    type="number"
+                    name="phone"
+                    value={ownerDetails.phone}
+                    palceholder=""
+                    className="w-full p-2 focus:outline-none no-spinner"
+                    onChange={handleChange}
+                  />
+
+                  {showOtp ? (
+                    <div>
+                      {isVerified && (
+                        <img
+                          src={green}
+                          alt=""
+                          className="h-6 w-6 cursor-pointer"
+                        />
+                      )}
+                      <OtpVerification />
+                    </div>
+                  ) : (
+                    <div>
+                      <Button
+                        type="button"
+                        name="Verify"
+                        onClick={handleVerify}
+                        className="text-customBlue font-bold pr-5 p-1"
+                      />
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
             <div className="flex justify-between">
-              <div className="flex flex-col gap-1 w-[48%] h-16">
+              <div className=" realtive flex flex-col gap-1 w-[48%] h-16">
                 <p className="text-sm text-customOtp">Expertise</p>
-                <Input
-                  type="text"
-                  name="expertise"
-                  value=""
-                  palceholder=""
-                  className="border rounded-lg h-6 w-full p-2 h-full"
-                  onChange={handleChange}
-                />
+                <div
+                  onClick={handleInputClick}
+                  className="flex border rounded-lg h-10 justify-between pr-3 items-center cursor-pointer"
+                >
+                  <input
+                    type="text"
+                    value={selectedExpertise}
+                    readOnly
+                    className=" h-6 w-full p-2 h-full cursor-pointer focus:outline-none"
+                  />
+                  <img src={drop} alt="" className="h-9 w-9" />
+                </div>
+
+                {showExpertise && (
+                  <ExpertiseLayout save={handleSave} cancel={handleCancel} />
+                )}
               </div>
               <div className="flex flex-col gap-1 w-[48%]">
                 <p className="text-sm text-customOtp">Experience (Years)</p>
                 <Input
-                  type="text"
+                  type="number"
                   name="experience"
-                  value=""
+                  value={ownerDetails.experience}
                   palceholder=""
-                  className="border rounded-lg h-6 w-full p-2 h-full"
+                  className="border rounded-lg h-6 w-full p-2 h-full no-spinner
+                  "
                   onChange={handleChange}
                 />
               </div>
@@ -103,8 +225,15 @@ export default function PersonalDetails() {
           <Button
             type="button"
             name="Save"
-            onClick={handleClick}
-            className="bg-customBlue text-customWhite text-sm px-2 p-1 rounded shadow"
+            onClick={handlesaveInput}
+            className={`${
+              ownerDetails.name === "" ||
+              ownerDetails.phone === "" ||
+              ownerDetails.expertise === selectedExpertise ||
+              ownerDetails.experience === ""
+                ? "bg-customOtp text-black text-sm px-2 p-1 rounded shadow cursor-not-allowed"
+                : "bg-customBlue text-customWhite text-sm px-2 p-1 rounded shadow"
+            }`}
           />
           <Button
             type="button"
